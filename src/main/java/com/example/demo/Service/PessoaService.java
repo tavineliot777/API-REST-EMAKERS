@@ -6,6 +6,7 @@ import com.example.demo.Repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,12 +21,21 @@ public class PessoaService {
 
     public List<Pessoa> listar(){return pessoaRepository.findAll();}
 
-    public Pessoa criar(Pessoa pessoa){return pessoaRepository.save(pessoa);}
+    public Pessoa criar(Pessoa pessoa){
+
+        String senhaEncriptada = new BCryptPasswordEncoder().encode(pessoa.getPassword());
+
+        pessoa.setPassword(senhaEncriptada);
+
+        return pessoaRepository.save(pessoa);}
 
     public void deletar(Long id){pessoaRepository.deleteById(id);}
 
     public Pessoa atualizar(Long id, Pessoa pessoaAtualizada){
 
+   String senhas = new BCryptPasswordEncoder().encode(pessoaAtualizada.getPassword());
+
+     pessoaAtualizada.setPassword(senhas);
 
         Pessoa pessoa = pessoaRepository.findById(id)
                         .orElseThrow(() -> new RuntimeException("Pessoa não encontrada"));
@@ -40,6 +50,6 @@ public class PessoaService {
 
     }
 
-
+             
 
 }
