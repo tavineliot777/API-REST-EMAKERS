@@ -34,6 +34,18 @@ public class Pessoa implements UserDetails {
     )
     private Set<Livro> livros = new HashSet<>();
 
+    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.REMOVE)
+    private List<Emprestimo> emprestimos;
+
+
+
+    @ManyToMany
+    @JoinTable(
+            name = "TB_USERS_ROLES",
+            joinColumns = @JoinColumn(name = "pessoa_id"),
+            inverseJoinColumns = @JoinColumn(name = "roles_id"))
+    private List<RolesModel> roles;
+
     public Pessoa() {
     }
 
@@ -88,7 +100,7 @@ public class Pessoa implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return roles;
     }
 
     @Override
